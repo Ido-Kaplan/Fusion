@@ -15,23 +15,23 @@ def get_y(parameters):
 def return_entanglement_success_chance(parameters):
     x=get_x(parameters)
     y=get_y(parameters)
-    return 0.25*(x*(1-x) + y*(1-y)+(x+y)*(2-x-y))
+    return 0.25*(x*(1-y) + y*(1-x))
 
-def entanglement_success_chance_loss(parameters,max_chance = 0.375):
+def entanglement_success_chance_loss(parameters,max_chance = 0.25):
     return max_chance - return_entanglement_success_chance(parameters)
 
 
-def get_t(parameters):
-    t = torch.tensor(1.0)
-    t *= torch.abs(parameters[0,2]*parameters[2,3]+parameters[0,3]*parameters[2,2])**2 + \
+def get_t_11(parameters):
+    t_11 = torch.tensor(1.0)
+    t_11 *= torch.abs(parameters[0,2]*parameters[2,3]+parameters[0,3]*parameters[2,2])**2 + \
          torch.abs(parameters[0, 2] * parameters[3, 3] + parameters[0, 3] * parameters[3, 2]) ** 2
-    t /=(t+ torch.abs(parameters[1,2]*parameters[2,3]+parameters[1,3]*parameters[2,2])**2 +
+    t_11 /=(t_11+ torch.abs(parameters[1,2]*parameters[2,3]+parameters[1,3]*parameters[2,2])**2 +
          torch.abs(parameters[1, 2] * parameters[3, 3] + parameters[1, 3] * parameters[3, 2]) ** 2)
-    return t
+    return t_11
 
 def get_entanglement_entropy(parameters):
-    t = get_t(parameters)
-    return -t*torch.log(t) - (1.0-t)*torch.log(1.0-t)
+    t_11 = get_t_11(parameters)
+    return -t_11*torch.log(t_11) - (1.0-t_11)*torch.log(1.0-t_11)
 
 def entanglement_entropy_loss(parameters,max_entropy = 0.6931471805599453):
     return max_entropy - get_entanglement_entropy(parameters)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     print("\n\nAFTER:\nparameters=",parameters)
     print("End result entanglement",float(get_entanglement_entropy(parameters).data))
     print("End result chance", float(return_entanglement_success_chance(parameters).data))
-    print("End result t:",float(get_t(parameters).data))
+    print("End result t_11:",float(get_t_11(parameters).data))
     print("x:",float(get_x(parameters).data),"y:",float(get_y(parameters).data))
     list_of_parameters = list(parameters.detach().numpy())
     if plot_loss_graph:
