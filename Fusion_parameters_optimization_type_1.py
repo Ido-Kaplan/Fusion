@@ -30,10 +30,6 @@ def return_entanglement_success_chance_t01(parameters):
 
 
 def entanglement_success_chance_loss(parameters,max_chance_t11 = 0.25,max_chance_t10 = 0.375,max_chance_t01 = 0.375):
-    # return 0.5 - return_entanglement_success_chance_t11(parameters) - \
-    #              return_entanglement_success_chance_t10(parameters) - \
-    #              return_entanglement_success_chance_t01(parameters)
-
     return max_chance_t11 - return_entanglement_success_chance_t11(parameters) + \
            max_chance_t10 - return_entanglement_success_chance_t10(parameters) + \
            max_chance_t01 - return_entanglement_success_chance_t01(parameters)
